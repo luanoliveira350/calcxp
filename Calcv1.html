@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Experiência Profissional</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .input-group label {
+            width: 120px;
+            margin-right: 10px;
+        }
+        input[type="date"], input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .remove-btn {
+            background-color: #f44336;
+            margin-left: 10px;
+        }
+        .remove-btn:hover {
+            background-color: #d32f2f;
+        }
+        .period-list {
+            margin-bottom: 20px;
+        }
+        .period-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .invalid {
+            color: red;
+        }
+        .timeline {
+            margin-left: 20px;
+        }
+        .timeline-item {
+            margin-bottom: 5px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .timeline-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-size: 20px;
+        }
+        .invalid-timeline:before {
+            color: red;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+        .checkbox-group label {
+            margin-left: 5px;
+            white-space: nowrap;
+        }
+        
+        /* Estilos para o gráfico de barras */
+        .timeline-chart {
+            margin: 30px 0;
+            position: relative;
+            height: 400px;
+            border-left: 2px solid #333;
+            padding-left: 10px;
+        }
+        .chart-period {
+            position: absolute;
+            height: 30px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .chart-period:hover {
+            opacity: 0.8;
+            transform: scaleY(1.1);
+        }
+        .chart-period.valid {
+            background-color: #4285F4;
+        }
+        .chart-period.invalid {
+            background-color: #EA4335;
+        }
+        .chart-period.consolidated {
+            background-color: #34A853;
+        }
+        .chart-label {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .chart-label.top {
+            bottom: 100%;
+            left: 0;
+        }
+        .chart-label.bottom {
+            top: 100%;
+            left: 0;
+        }
+        .chart-date-axis {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            border-top: 1px solid #ccc;
+        }
+        .chart-date-tick {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 5px;
+            background-color: #333;
+        }
+        .chart-date-label {
+            position: absolute;
+            top: 6px;
+            font-size: 10px;
+            transform: translateX(-50%);
+        }
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 15px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Experiência Profissional</h1>
+        
+        <div class="input-group">
+            <label for="formation-date">Data de Formação:</label>
+            <input type="date" id="formation-date">
+        </div>
+        
+        <div class="input-group">
+            <label for="position-name">Cargo:</label>
+            <input type="text" id="position-name" placeholder="Digite o nome do cargo">
+            
+            <label for="start-date">Data Início:</label>
+            <input type="date" id="start-date">
+            
+            <label for="end-date">Data Fim:</label>
+            <input type="date" id="end-date">
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="open-period">
+                <label for="open-period">Em aberto (23/04/2025)</label>
+            </div>
+            
+            <button id="add-period">Adicionar Período</button>
+        </div>
+        
+        <div class="period-list" id="periods-container">
+            <h2>Períodos de Experiência</h2>
+            <!-- Períodos serão adicionados aqui dinamicamente -->
+        </div>
+        
+        <button id="calculate">Calcular</button>
+        
+        <div id="result-container" style="display: none;">
+            <h2>Resultado</h2>
+            <table id="result-table">
+                <thead>
+                    <tr>
+                        <th>Cargo (Dias / 180)</th>
+                        <th>Nota Máxima</th>
+                        <th>Períodos de 180 dias</th>
+                        <th>Nota Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Resultados serão adicionados aqui dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="timeline-container" style="display: none;">
+            <h2>Visualização da Linha do Tempo</h2>
+            
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4285F4;"></div>
+                    <span>Períodos Válidos</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #EA4335;"></div>
+                    <span>Períodos Inválidos</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #34A853;"></div>
+                    <span>Períodos Consolidados</span>
+                </div>
+            </div>
+            
+            <div class="timeline-chart" id="timeline-chart">
+                <!-- Gráfico de barras será renderizado aqui -->
+            </div>
+            
+            <h2>Linha do Tempo dos Períodos Originais</h2>
+            <div class="timeline" id="original-timeline">
+                <!-- Linha do tempo original será adicionada aqui -->
+            </div>
+            
+            <h2>Linha do Tempo Consolidada</h2>
+            <div class="timeline" id="consolidated-timeline">
+                <!-- Linha do tempo consolidada será adicionada aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formationDateInput = document.getElementById('formation-date');
+            const positionNameInput = document.getElementById('position-name');
+            const startDateInput = document.getElementById('start-date');
+            const endDateInput = document.getElementById('end-date');
+            const openPeriodCheckbox = document.getElementById('open-period');
+            const addPeriodBtn = document.getElementById('add-period');
+            const calculateBtn = document.getElementById('calculate');
+            const periodsContainer = document.getElementById('periods-container');
+            const resultContainer = document.getElementById('result-container');
+            const resultTable = document.getElementById('result-table').querySelector('tbody');
+            const originalTimeline = document.getElementById('original-timeline');
+            const consolidatedTimeline = document.getElementById('consolidated-timeline');
+            const timelineContainer = document.getElementById('timeline-container');
+            const timelineChart = document.getElementById('timeline-chart');
+            
+            let periods = [];
+            
+            // Adicionar período
+            addPeriodBtn.addEventListener('click', function() {
+                const positionName = positionNameInput.value || 'Dev1';
+                const startDate = startDateInput.value;
+                let endDate = endDateInput.value;
+                
+                if (openPeriodCheckbox.checked) {
+                    endDate = '2025-04-23'; // Data fixa para períodos em aberto
+                }
+                
+                if (!startDate || !endDate) {
+                    alert('Por favor, preencha ambas as datas.');
+                    return;
+                }
+                
+                if (new Date(endDate) < new Date(startDate)) {
+                    alert('A data de fim não pode ser anterior à data de início.');
+                    return;
+                }
+                
+                periods.push({ 
+                    positionName,
+                    startDate, 
+                    endDate,
+                    isOpen: openPeriodCheckbox.checked
+                });
+                updatePeriodsList();
+                
+                // Limpar inputs
+                positionNameInput.value = '';
+                startDateInput.value = '';
+                endDateInput.value = '';
+                openPeriodCheckbox.checked = false;
+            });
+            
+            // Atualizar lista de períodos
+            function updatePeriodsList() {
+                periodsContainer.innerHTML = '<h2>Períodos de Experiência</h2>';
+                
+                periods.forEach((period, index) => {
+                    const periodDiv = document.createElement('div');
+                    periodDiv.className = 'period-item';
+                    
+                    const positionLabel = document.createElement('label');
+                    positionLabel.textContent = 'Cargo:';
+                    
+                    const positionInput = document.createElement('input');
+                    positionInput.type = 'text';
+                    positionInput.value = period.positionName;
+                    positionInput.style.width = '150px';
+                    positionInput.addEventListener('change', function() {
+                        periods[index].positionName = this.value;
+                    });
+                    
+                    const startLabel = document.createElement('label');
+                    startLabel.textContent = 'Data Início:';
+                    
+                    const startInput = document.createElement('input');
+                    startInput.type = 'date';
+                    startInput.value = period.startDate;
+                    startInput.addEventListener('change', function() {
+                        periods[index].startDate = this.value;
+                    });
+                    
+                    const endLabel = document.createElement('label');
+                    endLabel.textContent = 'Data Fim:';
+                    
+                    const endInput = document.createElement('input');
+                    endInput.type = 'date';
+                    endInput.value = period.endDate;
+                    endInput.disabled = period.isOpen;
+                    endInput.addEventListener('change', function() {
+                        periods[index].endDate = this.value;
+                    });
+                    
+                    const checkboxDiv = document.createElement('div');
+                    checkboxDiv.className = 'checkbox-group';
+                    
+                    const checkboxInput = document.createElement('input');
+                    checkboxInput.type = 'checkbox';
+                    checkboxInput.checked = period.isOpen;
+                    checkboxInput.id = `open-period-${index}`;
+                    checkboxInput.addEventListener('change', function() {
+                        periods[index].isOpen = this.checked;
+                        if (this.checked) {
+                            periods[index].endDate = '2025-04-23';
+                            endInput.value = '2025-04-23';
+                            endInput.disabled = true;
+                        } else {
+                            endInput.disabled = false;
+                        }
+                    });
+                    
+                    const checkboxLabel = document.createElement('label');
+                    checkboxLabel.textContent = 'Em aberto (23/04/2025)';
+                    checkboxLabel.htmlFor = `open-period-${index}`;
+                    
+                    checkboxDiv.appendChild(checkboxInput);
+                    checkboxDiv.appendChild(checkboxLabel);
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = 'Remover';
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.addEventListener('click', function() {
+                        periods.splice(index, 1);
+                        updatePeriodsList();
+                    });
+                    
+                    periodDiv.appendChild(positionLabel);
+                    periodDiv.appendChild(positionInput);
+                    periodDiv.appendChild(startLabel);
+                    periodDiv.appendChild(startInput);
+                    periodDiv.appendChild(endLabel);
+                    periodDiv.appendChild(endInput);
+                    periodDiv.appendChild(checkboxDiv);
+                    periodDiv.appendChild(removeBtn);
+                    
+                    periodsContainer.appendChild(periodDiv);
+                });
+            }
+            
+            // Calcular experiência
+            calculateBtn.addEventListener('click', function() {
+                if (periods.length === 0) {
+                    alert('Adicione pelo menos um período para calcular.');
+                    return;
+                }
+                
+                if (!formationDateInput.value) {
+                    alert('Por favor, informe a data de formação.');
+                    return;
+                }
+                
+                const formationDate = new Date(formationDateInput.value);
+                
+                // Ordenar períodos por data de início
+                periods.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+                
+                // Processar períodos (aplicando as regras de ajuste)
+                const processedPeriods = periods.map(period => {
+                    let startDate = new Date(period.startDate);
+                    let endDate = new Date(period.endDate);
+                    
+                    // Ajustar início se começar antes da formação mas terminar depois
+                    if (startDate < formationDate && endDate >= formationDate) {
+                        startDate = new Date(formationDate);
+                    }
+                    
+                    const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    
+                    // Verificar se o período é inválido
+                    const isBeforeFormation = endDate < formationDate;
+                    const isLessThan180 = days < 180;
+                    const isValid = !isBeforeFormation && !isLessThan180;
+                    
+                    return {
+                        ...period,
+                        startDate: startDate.toISOString().split('T')[0],
+                        endDate: endDate.toISOString().split('T')[0],
+                        originalStartDate: period.startDate,
+                        originalEndDate: period.endDate,
+                        days,
+                        isBeforeFormation,
+                        isLessThan180,
+                        isValid
+                    };
+                });
+                
+                // Consolidar períodos (sobrepostos ou contíguos)
+                const consolidatedPeriods = consolidatePeriods(processedPeriods.filter(p => p.isValid));
+                
+                // Calcular resultados - apenas períodos válidos e consolidados
+                const results = [];
+                
+                // Primeiro adicionar períodos consolidados
+                consolidatedPeriods.forEach(period => {
+                    const days = Math.floor((new Date(period.endDate) - new Date(period.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+                    const fullPeriods = Math.floor(days / 180);
+                    const note = fullPeriods * 3.5;
+                    
+                    results.push({
+                        position: `Período Consolidado: ${period.positionName} (${days} / 180)`,
+                        maxNote: 3.5,
+                        fullPeriods: fullPeriods,
+                        totalNote: note.toFixed(2)
+                    });
+                });
+                
+                // Depois adicionar períodos avulsos válidos que não foram consolidados
+                const validPeriods = processedPeriods.filter(p => p.isValid);
+                const allConsolidatedDates = consolidatedPeriods.flatMap(p => [
+                    p.startDate, p.endDate
+                ]);
+                
+                validPeriods.forEach(period => {
+                    // Verificar se o período não está incluído em nenhum período consolidado
+                    const isIncludedInConsolidated = consolidatedPeriods.some(consolidated => 
+                        new Date(period.startDate) >= new Date(consolidated.startDate) &&
+                        new Date(period.endDate) <= new Date(consolidated.endDate)
+                    );
+                    
+                    if (!isIncludedInConsolidated) {
+                        const fullPeriods = Math.floor(period.days / 180);
+                        const note = fullPeriods * 3.5;
+                        
+                        results.push({
+                            position: `${period.positionName} (${period.days} / 180)`,
+                            maxNote: 3.5,
+                            fullPeriods: fullPeriods,
+                            totalNote: note.toFixed(2)
+                        });
+                    }
+                });
+                
+                // Exibir resultados
+                displayResults(results, processedPeriods, consolidatedPeriods);
+                
+                // Renderizar gráfico de barras
+                renderTimelineChart(processedPeriods, consolidatedPeriods);
+            });
+            
+            // Consolidar períodos sobrepostos ou contíguos
+            function consolidatePeriods(validPeriods) {
+                if (validPeriods.length === 0) return [];
+                
+                const sortedPeriods = [...validPeriods].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+                const consolidated = [];
+                
+                let current = { ...sortedPeriods[0] };
+                
+                for (let i = 1; i < sortedPeriods.length; i++) {
+                    const next = sortedPeriods[i];
+                    const currentEnd = new Date(current.endDate);
+                    const nextStart = new Date(next.startDate);
+                    const nextEnd = new Date(next.endDate);
+                    
+                    // Verifica se os períodos são sobrepostos ou contíguos (até 1 dia de diferença)
+                    if (nextStart <= new Date(currentEnd.getTime() + 86400000)) { // 86400000 ms = 1 dia
+                        // Períodos sobrepostos ou contíguos - consolidar
+                        if (nextEnd > currentEnd) {
+                            current.endDate = next.endDate;
+                        }
+                        // Manter o nome do cargo do período mais longo
+                        if ((new Date(next.endDate) - new Date(next.startDate)) > 
+                            (new Date(current.endDate) - new Date(current.startDate))) {
+                            current.positionName = next.positionName;
+                        }
+                    } else {
+                        // Período separado - adicionar o atual e começar um novo
+                        consolidated.push({ ...current });
+                        current = { ...next };
+                    }
+                }
+                
+                // Adicionar o último período consolidado
+                consolidated.push({ ...current });
+                
+                return consolidated;
+            }
+            
+            // Renderizar gráfico de barras da linha do tempo
+            function renderTimelineChart(processedPeriods, consolidatedPeriods) {
+                timelineChart.innerHTML = '';
+                
+                // Encontrar a data mais antiga e mais recente para dimensionar o gráfico
+                const allPeriods = [...processedPeriods, ...consolidatedPeriods];
+                if (allPeriods.length === 0) return;
+                
+                let minDate = new Date(Math.min(...allPeriods.map(p => new Date(p.startDate).getTime())));
+                let maxDate = new Date(Math.max(...allPeriods.map(p => new Date(p.endDate).getTime())));
+                
+                // Adicionar margem de 3 meses antes e depois
+                minDate = new Date(minDate.getFullYear(), minDate.getMonth() - 3, 1);
+                maxDate = new Date(maxDate.getFullYear(), maxDate.getMonth() + 3, 1);
+                
+                const totalDays = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
+                const chartWidth = timelineChart.offsetWidth;
+                
+                // Função para converter data em posição horizontal
+                const dateToPosition = (date) => {
+                    const daysFromStart = Math.ceil((new Date(date) - minDate) / (1000 * 60 * 60 * 24));
+                    return (daysFromStart / totalDays) * chartWidth;
+                };
+                
+                // Adicionar eixo de datas
+                const dateAxis = document.createElement('div');
+                dateAxis.className = 'chart-date-axis';
+                timelineChart.appendChild(dateAxis);
+                
+                // Adicionar marcadores de data
+                const currentYear = minDate.getFullYear();
+                const endYear = maxDate.getFullYear();
+                
+                for (let year = currentYear; year <= endYear; year++) {
+                    for (let month = 0; month < 12; month++) {
+                        const date = new Date(year, month, 1);
+                        if (date < minDate) continue;
+                        if (date > maxDate) break;
+                        
+                        const position = dateToPosition(date);
+                        
+                        const tick = document.createElement('div');
+                        tick.className = 'chart-date-tick';
+                        tick.style.left = `${position}px`;
+                        dateAxis.appendChild(tick);
+                        
+                        if (month === 0) { // Mostrar apenas o ano para janeiro
+                            const label = document.createElement('div');
+                            label.className = 'chart-date-label';
+                            label.textContent = year;
+                            label.style.left = `${position}px`;
+                            dateAxis.appendChild(label);
+                        }
+                    }
+                }
+                
+                // Renderizar períodos originais
+                processedPeriods.forEach((period, index) => {
+                    const startPos = dateToPosition(period.startDate);
+                    const endPos = dateToPosition(period.endDate);
+                    const width = endPos - startPos;
+                    
+                    const bar = document.createElement('div');
+                    bar.className = `chart-period ${period.isValid ? 'valid' : 'invalid'}`;
+                    bar.style.left = `${startPos}px`;
+                    bar.style.width = `${width}px`;
+                    bar.style.top = `${index * 40}px`;
+                    
+                    const topLabel = document.createElement('div');
+                    topLabel.className = 'chart-label top';
+                    topLabel.textContent = `${period.positionName}: ${period.days} dias`;
+                    if (!period.isValid) {
+                        topLabel.textContent += period.isBeforeFormation ? ' (Antes da formação)' : ' (<180 dias)';
+                    }
+                    bar.appendChild(topLabel);
+                    
+                    const bottomLabel = document.createElement('div');
+                    bottomLabel.className = 'chart-label bottom';
+                    bottomLabel.textContent = `${formatDate(period.startDate)} - ${formatDate(period.endDate)}`;
+                    if (period.isOpen) {
+                        bottomLabel.textContent += ' (Em aberto)';
+                    }
+                    bar.appendChild(bottomLabel);
+                    
+                    timelineChart.appendChild(bar);
+                });
+                
+                // Renderizar períodos consolidados (começando abaixo dos originais)
+                const consolidatedStartY = processedPeriods.length * 40 + 50;
+                
+                consolidatedPeriods.forEach((period, index) => {
+                    const startPos = dateToPosition(period.startDate);
+                    const endPos = dateToPosition(period.endDate);
+                    const width = endPos - startPos;
+                    const days = Math.floor((new Date(period.endDate) - new Date(period.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+                    
+                    const bar = document.createElement('div');
+                    bar.className = 'chart-period consolidated';
+                    bar.style.left = `${startPos}px`;
+                    bar.style.width = `${width}px`;
+                    bar.style.top = `${consolidatedStartY + index * 40}px`;
+                    
+                    const topLabel = document.createElement('div');
+                    topLabel.className = 'chart-label top';
+                    topLabel.textContent = `${period.positionName} (Consolidado): ${days} dias`;
+                    bar.appendChild(topLabel);
+                    
+                    const bottomLabel = document.createElement('div');
+                    bottomLabel.className = 'chart-label bottom';
+                    bottomLabel.textContent = `${formatDate(period.startDate)} - ${formatDate(period.endDate)}`;
+                    bar.appendChild(bottomLabel);
+                    
+                    timelineChart.appendChild(bar);
+                });
+            }
+            
+            // Exibir resultados
+            function displayResults(results, processedPeriods, consolidatedPeriods) {
+                // Limpar tabela de resultados
+                resultTable.innerHTML = '';
+                
+                // Adicionar resultados à tabela
+                results.forEach(result => {
+                    const row = document.createElement('tr');
+                    
+                    const positionCell = document.createElement('td');
+                    positionCell.textContent = result.position;
+                    
+                    const maxNoteCell = document.createElement('td');
+                    maxNoteCell.textContent = result.maxNote;
+                    
+                    const fullPeriodsCell = document.createElement('td');
+                    fullPeriodsCell.textContent = result.fullPeriods;
+                    
+                    const totalNoteCell = document.createElement('td');
+                    totalNoteCell.textContent = result.totalNote;
+                    
+                    row.appendChild(positionCell);
+                    row.appendChild(maxNoteCell);
+                    row.appendChild(fullPeriodsCell);
+                    row.appendChild(totalNoteCell);
+                    
+                    resultTable.appendChild(row);
+                });
+                
+                // Exibir linha do tempo original
+                originalTimeline.innerHTML = '';
+                processedPeriods.forEach((period, index) => {
+                    const item = document.createElement('div');
+                    item.className = `timeline-item ${period.isValid ? '' : 'invalid-timeline'}`;
+                    
+                    const periodText = document.createElement('span');
+                    periodText.textContent = `${period.positionName} (${formatDate(period.originalStartDate)} a ${formatDate(period.originalEndDate)}) - ${period.days} dias`;
+                    if (period.isOpen) {
+                        periodText.textContent += ' (Em aberto)';
+                    }
+                    if (!period.isValid) {
+                        periodText.className = 'invalid';
+                        
+                        if (period.isBeforeFormation) {
+                            periodText.textContent += ' - Inválido (antes da formação)';
+                        } else if (period.isLessThan180) {
+                            periodText.textContent += ' - Inválido (menos de 180 dias)';
+                        }
+                    } else if (period.originalStartDate !== period.startDate) {
+                        periodText.textContent += ` - Ajustado para: ${formatDate(period.startDate)}`;
+                    }
+                    
+                    item.appendChild(periodText);
+                    originalTimeline.appendChild(item);
+                });
+                
+                // Exibir linha do tempo consolidada
+                consolidatedTimeline.innerHTML = '';
+                consolidatedPeriods.forEach((period, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    
+                    const startDate = new Date(period.startDate);
+                    const endDate = new Date(period.endDate);
+                    const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+                    
+                    const periodText = document.createElement('span');
+                    periodText.textContent = `Período Consolidado ${index + 1}: ${period.positionName} (${formatDate(period.startDate)} a ${formatDate(period.endDate)}) - ${days} dias`;
+                    
+                    item.appendChild(periodText);
+                    consolidatedTimeline.appendChild(item);
+                });
+                
+                // Mostrar containers de resultado e linha do tempo
+                resultContainer.style.display = 'block';
+                timelineContainer.style.display = 'block';
+            }
+            
+            // Formatar data para exibição
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('pt-BR');
+            }
+        });
+    </script>
+</body>
+</html>
