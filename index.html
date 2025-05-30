@@ -1,202 +1,306 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Experiência Profissional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4285F4;
+            --secondary-color: #34A853;
+            --danger-color: #EA4335;
+            --warning-color: #FBBC05;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333;
+            --white: #ffffff;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1000px;
+            font-family: 'Roboto', sans-serif;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
         }
-        h1, h2 {
-            color: #333;
+        
+        h1, h2, h3 {
+            color: var(--dark-gray);
+            margin-top: 0;
         }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            font-weight: 500;
+        }
+        
         .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
+        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
+        
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid var(--medium-gray);
+            padding: 12px;
             text-align: left;
         }
+        
         th {
-            background-color: #f2f2f2;
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 500;
         }
+        
+        tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        
+        tr:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+        }
+        
+        .total-row {
+            font-weight: 500;
+            background-color: rgba(52, 168, 83, 0.2) !important;
+        }
+        
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 1.2rem;
             display: flex;
-            align-items: center;
             flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
+        
         .input-group label {
-            width: 120px;
-            margin-right: 10px;
+            min-width: 120px;
+            font-weight: 500;
         }
+        
         input[type="date"], input[type="text"] {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-right: 10px;
+            padding: 10px 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-family: 'Roboto', sans-serif;
+            flex: 1;
+            min-width: 150px;
+            max-width: 200px;
         }
+        
         button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 10px 18px;
+            background-color: var(--primary-color);
+            color: var(--white);
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-right: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
+        
         button:hover {
-            background-color: #45a049;
+            background-color: #3367d6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .remove-btn {
-            background-color: #f44336;
-            margin-left: 10px;
+            background-color: var(--danger-color);
         }
+        
         .remove-btn:hover {
-            background-color: #d32f2f;
+            background-color: #d33426;
         }
+        
         .period-list {
-            margin-bottom: 20px;
+            margin-bottom: 2rem;
         }
+        
         .period-item {
             display: flex;
-            align-items: center;
-            margin-bottom: 5px;
             flex-wrap: wrap;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 15px;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            gap: 10px;
         }
+        
         .invalid {
-            color: red;
+            color: var(--danger-color);
         }
-        .timeline {
-            margin-left: 20px;
-        }
-        .timeline-item {
-            margin-bottom: 5px;
-            position: relative;
-            padding-left: 20px;
-        }
-        .timeline-item:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #4CAF50;
-            font-size: 20px;
-        }
-        .invalid-timeline:before {
-            color: red;
-        }
+        
         .checkbox-group {
             display: flex;
             align-items: center;
             margin-left: 10px;
         }
+        
         .checkbox-group label {
-            margin-left: 5px;
+            margin-left: 8px;
             white-space: nowrap;
         }
         
         /* Estilos para o gráfico de barras */
         .timeline-chart {
-            margin: 30px 0;
+            margin: 2rem 0;
             position: relative;
-            height: 400px;
-            border-left: 2px solid #333;
-            padding-left: 10px;
+            height: auto;
+            min-height: 300px;
+            border-left: 2px solid var(--dark-gray);
+            padding-left: 15px;
         }
+        
         .chart-period {
             position: absolute;
             height: 30px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
+            border-radius: 4px;
         }
+        
         .chart-period:hover {
-            opacity: 0.8;
-            transform: scaleY(1.1);
+            opacity: 0.9;
+            transform: scaleY(1.05);
         }
+        
         .chart-period.valid {
-            background-color: #4285F4;
+            background-color: var(--primary-color);
         }
+        
         .chart-period.invalid {
-            background-color: #EA4335;
+            background-color: var(--danger-color);
         }
+        
         .chart-period.consolidated {
-            background-color: #34A853;
+            background-color: var(--secondary-color);
         }
+        
         .chart-label {
             position: absolute;
             white-space: nowrap;
             font-size: 12px;
-            font-weight: bold;
-            padding: 2px 5px;
-            border-radius: 3px;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: var(--dark-gray);
         }
+        
         .chart-label.top {
             bottom: 100%;
             left: 0;
+            margin-bottom: 5px;
         }
+        
         .chart-label.bottom {
             top: 100%;
             left: 0;
+            margin-top: 5px;
         }
+        
         .chart-date-axis {
             position: absolute;
-            bottom: -25px;
+            bottom: -30px;
             left: 0;
             width: 100%;
             height: 20px;
-            border-top: 1px solid #ccc;
+            border-top: 1px solid var(--medium-gray);
         }
+        
         .chart-date-tick {
             position: absolute;
             top: 0;
             width: 1px;
             height: 5px;
-            background-color: #333;
+            background-color: var(--dark-gray);
         }
+        
         .chart-date-label {
             position: absolute;
             top: 6px;
-            font-size: 10px;
+            font-size: 11px;
             transform: translateX(-50%);
         }
+        
         .chart-legend {
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            margin: 1.5rem 0;
             flex-wrap: wrap;
+            gap: 15px;
         }
+        
         .legend-item {
             display: flex;
             align-items: center;
-            margin: 5px 15px;
+            padding: 5px 10px;
+            background-color: var(--light-gray);
+            border-radius: 20px;
         }
+        
         .legend-color {
-            width: 20px;
-            height: 20px;
-            margin-right: 5px;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
             border-radius: 3px;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.2rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .input-group label {
+                margin-bottom: 5px;
+            }
+            
+            input[type="date"], input[type="text"] {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .period-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .chart-label {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -239,7 +343,9 @@
             <table id="result-table">
                 <thead>
                     <tr>
-                        <th>Cargo (Dias / 180)</th>
+                        <th>Cargo</th>
+                        <th>Período</th>
+                        <th>Dias</th>
                         <th>Nota Máxima</th>
                         <th>Períodos de 180 dias</th>
                         <th>Nota Total</th>
@@ -353,7 +459,7 @@
                     const positionInput = document.createElement('input');
                     positionInput.type = 'text';
                     positionInput.value = period.positionName;
-                    positionInput.style.width = '150px';
+                    positionInput.style.minWidth = '150px';
                     positionInput.addEventListener('change', function() {
                         periods[index].positionName = this.value;
                     });
@@ -452,12 +558,26 @@
                         startDate = new Date(formationDate);
                     }
                     
+                    // Calcular dias considerando a data final inclusiva
                     const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
                     
                     // Verificar se o período é inválido
-                    const isBeforeFormation = endDate < formationDate;
+                    const isBeforeFormation = new Date(period.endDate) < formationDate;
                     const isLessThan180 = days < 180;
-                    const isValid = !isBeforeFormation && !isLessThan180;
+                    
+                    // Verificar se está completamente dentro de outro período (experiência simultânea)
+                    let isSimultaneous = false;
+                    for (const otherPeriod of periods) {
+                        if (period !== otherPeriod && 
+                            new Date(period.startDate) >= new Date(otherPeriod.startDate) &&
+                            new Date(period.endDate) <= new Date(otherPeriod.endDate)) {
+                            isSimultaneous = true;
+                            break;
+                        }
+                    }
+                    
+                    const isValid = !isBeforeFormation && !isLessThan180 && !isSimultaneous;
+                    const invalidationCode = isBeforeFormation ? 'A9' : (isLessThan180 ? 'A11' : (isSimultaneous ? 'A19' : null));
                     
                     return {
                         ...period,
@@ -468,36 +588,39 @@
                         days,
                         isBeforeFormation,
                         isLessThan180,
-                        isValid
+                        isSimultaneous,
+                        isValid,
+                        invalidationCode
                     };
                 });
                 
                 // Consolidar períodos (sobrepostos ou contíguos)
                 const consolidatedPeriods = consolidatePeriods(processedPeriods.filter(p => p.isValid));
                 
-                // Calcular resultados - apenas períodos válidos e consolidados
+                // Calcular resultados
                 const results = [];
+                let totalNote = 0;
                 
-                // Primeiro adicionar períodos consolidados
+                // Adicionar períodos consolidados
                 consolidatedPeriods.forEach(period => {
                     const days = Math.floor((new Date(period.endDate) - new Date(period.startDate)) / (1000 * 60 * 60 * 24)) + 1;
                     const fullPeriods = Math.floor(days / 180);
                     const note = fullPeriods * 3.5;
+                    totalNote += note;
                     
                     results.push({
-                        position: `Período Consolidado: ${period.positionName} (${days} / 180)`,
+                        position: period.positionName,
+                        period: `Período Consolidado: ${formatDate(period.startDate)} - ${formatDate(period.endDate)}`,
+                        days: days,
                         maxNote: 3.5,
                         fullPeriods: fullPeriods,
-                        totalNote: note.toFixed(2)
+                        totalNote: note.toFixed(2),
+                        isConsolidated: true
                     });
                 });
                 
-                // Depois adicionar períodos avulsos válidos que não foram consolidados
+                // Adicionar períodos avulsos válidos que não foram consolidados
                 const validPeriods = processedPeriods.filter(p => p.isValid);
-                const allConsolidatedDates = consolidatedPeriods.flatMap(p => [
-                    p.startDate, p.endDate
-                ]);
-                
                 validPeriods.forEach(period => {
                     // Verificar se o período não está incluído em nenhum período consolidado
                     const isIncludedInConsolidated = consolidatedPeriods.some(consolidated => 
@@ -508,18 +631,22 @@
                     if (!isIncludedInConsolidated) {
                         const fullPeriods = Math.floor(period.days / 180);
                         const note = fullPeriods * 3.5;
+                        totalNote += note;
                         
                         results.push({
-                            position: `${period.positionName} (${period.days} / 180)`,
+                            position: period.positionName,
+                            period: `${formatDate(period.startDate)} - ${formatDate(period.endDate)}`,
+                            days: period.days,
                             maxNote: 3.5,
                             fullPeriods: fullPeriods,
-                            totalNote: note.toFixed(2)
+                            totalNote: note.toFixed(2),
+                            isConsolidated: false
                         });
                     }
                 });
                 
                 // Exibir resultados
-                displayResults(results, processedPeriods, consolidatedPeriods);
+                displayResults(results, totalNote, processedPeriods, consolidatedPeriods);
                 
                 // Renderizar gráfico de barras
                 renderTimelineChart(processedPeriods, consolidatedPeriods);
@@ -572,8 +699,8 @@
                 const allPeriods = [...processedPeriods, ...consolidatedPeriods];
                 if (allPeriods.length === 0) return;
                 
-                let minDate = new Date(Math.min(...allPeriods.map(p => new Date(p.startDate).getTime())));
-                let maxDate = new Date(Math.max(...allPeriods.map(p => new Date(p.endDate).getTime())));
+                let minDate = new Date(Math.min(...allPeriods.map(p => new Date(p.originalStartDate).getTime())));
+                let maxDate = new Date(Math.max(...allPeriods.map(p => new Date(p.originalEndDate).getTime())));
                 
                 // Adicionar margem de 3 meses antes e depois
                 minDate = new Date(minDate.getFullYear(), minDate.getMonth() - 3, 1);
@@ -622,8 +749,8 @@
                 
                 // Renderizar períodos originais
                 processedPeriods.forEach((period, index) => {
-                    const startPos = dateToPosition(period.startDate);
-                    const endPos = dateToPosition(period.endDate);
+                    const startPos = dateToPosition(period.originalStartDate);
+                    const endPos = dateToPosition(period.originalEndDate);
                     const width = endPos - startPos;
                     
                     const bar = document.createElement('div');
@@ -636,13 +763,19 @@
                     topLabel.className = 'chart-label top';
                     topLabel.textContent = `${period.positionName}: ${period.days} dias`;
                     if (!period.isValid) {
-                        topLabel.textContent += period.isBeforeFormation ? ' (Antes da formação)' : ' (<180 dias)';
+                        if (period.isBeforeFormation) {
+                            topLabel.textContent += ' (A9)';
+                        } else if (period.isLessThan180) {
+                            topLabel.textContent += ' (A11)';
+                        } else if (period.isSimultaneous) {
+                            topLabel.textContent += ' (A19)';
+                        }
                     }
                     bar.appendChild(topLabel);
                     
                     const bottomLabel = document.createElement('div');
                     bottomLabel.className = 'chart-label bottom';
-                    bottomLabel.textContent = `${formatDate(period.startDate)} - ${formatDate(period.endDate)}`;
+                    bottomLabel.textContent = `${formatDate(period.originalStartDate)} - ${formatDate(period.originalEndDate)}`;
                     if (period.isOpen) {
                         bottomLabel.textContent += ' (Em aberto)';
                     }
@@ -681,7 +814,7 @@
             }
             
             // Exibir resultados
-            function displayResults(results, processedPeriods, consolidatedPeriods) {
+            function displayResults(results, totalNote, processedPeriods, consolidatedPeriods) {
                 // Limpar tabela de resultados
                 resultTable.innerHTML = '';
                 
@@ -691,23 +824,47 @@
                     
                     const positionCell = document.createElement('td');
                     positionCell.textContent = result.position;
+                    row.appendChild(positionCell);
+                    
+                    const periodCell = document.createElement('td');
+                    periodCell.textContent = result.period;
+                    row.appendChild(periodCell);
+                    
+                    const daysCell = document.createElement('td');
+                    daysCell.textContent = result.days;
+                    row.appendChild(daysCell);
                     
                     const maxNoteCell = document.createElement('td');
                     maxNoteCell.textContent = result.maxNote;
+                    row.appendChild(maxNoteCell);
                     
                     const fullPeriodsCell = document.createElement('td');
                     fullPeriodsCell.textContent = result.fullPeriods;
+                    row.appendChild(fullPeriodsCell);
                     
                     const totalNoteCell = document.createElement('td');
                     totalNoteCell.textContent = result.totalNote;
-                    
-                    row.appendChild(positionCell);
-                    row.appendChild(maxNoteCell);
-                    row.appendChild(fullPeriodsCell);
                     row.appendChild(totalNoteCell);
                     
                     resultTable.appendChild(row);
                 });
+                
+                // Adicionar linha de total
+                if (results.length > 0) {
+                    const totalRow = document.createElement('tr');
+                    totalRow.className = 'total-row';
+                    
+                    const totalLabelCell = document.createElement('td');
+                    totalLabelCell.colSpan = 5;
+                    totalLabelCell.textContent = 'Total Geral';
+                    totalRow.appendChild(totalLabelCell);
+                    
+                    const totalNoteCell = document.createElement('td');
+                    totalNoteCell.textContent = totalNote.toFixed(2);
+                    totalRow.appendChild(totalNoteCell);
+                    
+                    resultTable.appendChild(totalRow);
+                }
                 
                 // Exibir linha do tempo original
                 originalTimeline.innerHTML = '';
@@ -724,9 +881,11 @@
                         periodText.className = 'invalid';
                         
                         if (period.isBeforeFormation) {
-                            periodText.textContent += ' - Inválido (antes da formação)';
+                            periodText.textContent += ' - Inválido (A9 - Antes da formação)';
                         } else if (period.isLessThan180) {
-                            periodText.textContent += ' - Inválido (menos de 180 dias)';
+                            periodText.textContent += ' - Inválido (A11 - Menos de 180 dias)';
+                        } else if (period.isSimultaneous) {
+                            periodText.textContent += ' - Inválido (A19 - Experiência simultânea)';
                         }
                     } else if (period.originalStartDate !== period.startDate) {
                         periodText.textContent += ` - Ajustado para: ${formatDate(period.startDate)}`;
@@ -761,7 +920,10 @@
             // Formatar data para exibição
             function formatDate(dateString) {
                 const date = new Date(dateString);
-                return date.toLocaleDateString('pt-BR');
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
             }
         });
     </script>
